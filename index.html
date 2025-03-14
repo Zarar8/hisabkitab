@@ -1,15 +1,50 @@
-[4:54 AM, 3/14/2025] zararahmed8: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Earnings Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 40%;
+            margin: auto;
+        }
+        input {
+            display: block;
+            width: 90%;
+            padding: 8px;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 95%;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h2>YouTube Earnings Distribution</h2>
-        
+
         <label>Month:</label>
         <input type="text" id="month" placeholder="e.g., January 2025">
 
@@ -31,7 +66,78 @@
         <button onclick="generateSlip()">Calculate & View Slip</button>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        function generateSlip() {
+            let month = document.getElementById("month").value;
+            let totalPayout = parseFloat(document.getElementById("totalPayout").value);
+            let amcEarnings = parseFloat(document.getElementById("amcEarnings").value);
+            let cryptoEarnings = parseFloat(document.getElementById("cryptoEarnings").value);
+            let stockEarnings = parseFloat(document.getElementById("stockEarnings").value);
+            let exchangeRate = parseFloat(document.getElementById("exchangeRate").value);
+
+            if (!month || isNaN(totalPayout) || isNaN(amcEarnings) || isNaN(cryptoEarnings) || isNaN(stockEarnings) || isNaN(exchangeRate)) {
+                alert("Please fill in all fields correctly.");
+                return;
+            }
+
+            let amcShares = {
+                "Zarar Ahmed": (amcEarnings * 0.3333).toFixed(2),
+                "Rajab": (amcEarnings * 0.3333).toFixed(2),
+                "Muhammad Khan": (amcEarnings * 0.3333).toFixed(2)
+            };
+
+            let cryptoShares = {
+                "Zarar Ahmed": (cryptoEarnings * 0.5).toFixed(2),
+                "Muhammad Khan": (cryptoEarnings * 0.5).toFixed(2)
+            };
+
+            let stockShares = {
+                "Zarar Ahmed": (stockEarnings * 0.4).toFixed(2),
+                "Rajab": (stockEarnings * 0.2).toFixed(2),
+                "Muhammad Khan": (stockEarnings * 0.4).toFixed(2)
+            };
+
+            let totalSharesUSD = {
+                "Zarar Ahmed": (parseFloat(amcShares["Zarar Ahmed"]) + parseFloat(cryptoShares["Zarar Ahmed"] || 0) + parseFloat(stockShares["Zarar Ahmed"])).toFixed(2),
+                "Rajab": (parseFloat(amcShares["Rajab"]) + parseFloat(stockShares["Rajab"])).toFixed(2),
+                "Muhammad Khan": (parseFloat(amcShares["Muhammad Khan"]) + parseFloat(cryptoShares["Muhammad Khan"] || 0) + parseFloat(stockShares["Muhammad Khan"])).toFixed(2)
+            };
+
+            let totalSharesPKR = {
+                "Zarar Ahmed": (totalSharesUSD["Zarar Ahmed"] * exchangeRate).toFixed(2),
+                "Rajab": (totalSharesUSD["Rajab"] * exchangeRate).toFixed(2),
+                "Muhammad Khan": (totalSharesUSD["Muhammad Khan"] * exchangeRate).toFixed(2)
+            };
+
+            let newWindow = window.open("", "_blank");
+            newWindow.document.write(`
+                <html>
+                <head>
+                    <title>YouTube Earnings Slip</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; text-align: center; }
+                        h2 { text-align: center; }
+                        .record { margin: 10px 0; font-size: 18px; }
+                        .btn { display: block; width: 100%; padding: 10px; margin-top: 20px; background: green; color: white; text-align: center; text-decoration: none; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h2>YouTube Earnings Report - ${month}</h2>
+                        <p class="record"><strong>Total Payout:</strong> ${totalPayout} USD</p>
+                        <p class="record"><strong>Exchange Rate:</strong> 1 USD = ${exchangeRate} PKR</p>
+                        <hr>
+                        <p class="record"><strong>Zarar Ahmed:</strong> ${totalSharesUSD["Zarar Ahmed"]} USD (${totalSharesPKR["Zarar Ahmed"]} PKR)</p>
+                        <p class="record"><strong>Rajab:</strong> ${totalSharesUSD["Rajab"]} USD (${totalSharesPKR["Rajab"]} PKR)</p>
+                        <p class="record"><strong>Muhammad Khan:</strong> ${totalSharesUSD["Muhammad Khan"]} USD (${totalSharesPKR["Muhammad Khan"]} PKR)</p>
+                        <a href="javascript:window.print()" class="btn">Print or Save as PDF</a>
+                    </div>
+                </body>
+                </html>
+            `);
+            newWindow.document.close();
+        }
+    </script>
 </body>
 </html>
-[4:55 AM, 3/14/2025] zararahmed8: 
