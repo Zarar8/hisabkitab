@@ -1,4 +1,4 @@
-unction calculateEarnings() {
+function generateSlip() {
     let month = document.getElementById("month").value;
     let totalPayout = parseFloat(document.getElementById("totalPayout").value);
     let amcEarnings = parseFloat(document.getElementById("amcEarnings").value);
@@ -30,9 +30,9 @@ unction calculateEarnings() {
     };
 
     let totalSharesUSD = {
-        "Zarar Ahmed": (parseFloat(amcShares["Zarar Ahmed"]) + parseFloat(cryptoShares["Zarar Ahmed"]) + parseFloat(stockShares["Zarar Ahmed"])).toFixed(2),
+        "Zarar Ahmed": (parseFloat(amcShares["Zarar Ahmed"]) + parseFloat(cryptoShares["Zarar Ahmed"] || 0) + parseFloat(stockShares["Zarar Ahmed"])).toFixed(2),
         "Rajab": (parseFloat(amcShares["Rajab"]) + parseFloat(stockShares["Rajab"])).toFixed(2),
-        "Muhammad Khan": (parseFloat(amcShares["Muhammad Khan"]) + parseFloat(cryptoShares["Muhammad Khan"]) + parseFloat(stockShares["Muhammad Khan"])).toFixed(2)
+        "Muhammad Khan": (parseFloat(amcShares["Muhammad Khan"]) + parseFloat(cryptoShares["Muhammad Khan"] || 0) + parseFloat(stockShares["Muhammad Khan"])).toFixed(2)
     };
 
     let totalSharesPKR = {
@@ -41,23 +41,33 @@ unction calculateEarnings() {
         "Muhammad Khan": (totalSharesUSD["Muhammad Khan"] * exchangeRate).toFixed(2)
     };
 
-    // Display Result
-    let resultDiv = document.getElementById("result");
-    resultDiv.innerHTML = `
-        <p><strong>Month:</strong> ${month}</p>
-        <p><strong>Total Earnings:</strong> ${totalPayout} USD</p>
-        <p><strong>Zarar Ahmed:</strong> ${totalSharesUSD["Zarar Ahmed"]} USD (${totalSharesPKR["Zarar Ahmed"]} PKR)</p>
-        <p><strong>Rajab:</strong> ${totalSharesUSD["Rajab"]} USD (${totalSharesPKR["Rajab"]} PKR)</p>
-        <p><strong>Muhammad Khan:</strong> ${totalSharesUSD["Muhammad Khan"]} USD (${totalSharesPKR["Muhammad Khan"]} PKR)</p>
-    `;
-
-    // Generate PDF
-    let doc = new jsPDF();
-    doc.text(YouTube Earnings Report - ${month}, 10, 10);
-    doc.text(Total Payout: ${totalPayout} USD, 10, 20);
-    doc.text(Exchange Rate: 1 USD = ${exchangeRate} PKR, 10, 30);
-    doc.text(Zarar Ahmed: ${totalSharesUSD["Zarar Ahmed"]} USD (${totalSharesPKR["Zarar Ahmed"]} PKR), 10, 40);
-    doc.text(Rajab: ${totalSharesUSD["Rajab"]} USD (${totalSharesPKR["Rajab"]} PKR), 10, 50);
-    doc.text(Muhammad Khan: ${totalSharesUSD["Muhammad Khan"]} USD (${totalSharesPKR["Muhammad Khan"]} PKR), 10, 60);
-    doc.save(YouTube_Earnings_${month}.pdf);
+    // Open new page
+    let newWindow = window.open("", "_blank");
+    newWindow.document.write(`
+        <html>
+        <head>
+            <title>YouTube Earnings Slip</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; }
+                h2 { text-align: center; }
+                .record { margin: 10px 0; }
+                .btn { display: block; width: 100%; padding: 10px; margin-top: 20px; background: green; color: white; text-align: center; text-decoration: none; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h2>YouTube Earnings Report - ${month}</h2>
+                <p class="record"><strong>Total Payout:</strong> ${totalPayout} USD</p>
+                <p class="record"><strong>Exchange Rate:</strong> 1 USD = ${exchangeRate} PKR</p>
+                <hr>
+                <p class="record"><strong>Zarar Ahmed:</strong> ${totalSharesUSD["Zarar Ahmed"]} USD (${totalSharesPKR["Zarar Ahmed"]} PKR)</p>
+                <p class="record"><strong>Rajab:</strong> ${totalSharesUSD["Rajab"]} USD (${totalSharesPKR["Rajab"]} PKR)</p>
+                <p class="record"><strong>Muhammad Khan:</strong> ${totalSharesUSD["Muhammad Khan"]} USD (${totalSharesPKR["Muhammad Khan"]} PKR)</p>
+                <a href="javascript:window.print()" class="btn">Print or Save as PDF</a>
+            </div>
+        </body>
+        </html>
+    `);
+    newWindow.document.close();
 }
